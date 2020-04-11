@@ -110,11 +110,7 @@ public class MainActivity extends AppCompatActivity {
      * Creates a temporary image file and captures a picture to store in it.
      */
     private void launchCamera() {
-
-        // Create the capture image intent
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the temporary File where the photo should go
             File photoFile = null;
@@ -150,10 +146,8 @@ public class MainActivity extends AppCompatActivity {
         // If the image capture activity was called and was successful
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // Process the image and set it to the TextView
             processAndSetImage();
         } else {
-
             // Otherwise, delete the temporary image file
             BitmapUtils.deleteImageFile(this, mTempPhotoPath);
         }
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding.clearButton.setVisibility(View.VISIBLE);
 
         // Resample the saved image to fit the ImageView
-        mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
+        mResultsBitmap = BitmapUtils.resamplePic(mBinding.imageView, mTempPhotoPath);
 
         // Detect the faces and overlay the appropriate emoji
         mResultsBitmap = Emojifier.detectFacesandOverlayEmoji(this, mResultsBitmap);

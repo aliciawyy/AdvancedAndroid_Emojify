@@ -24,8 +24,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,26 +45,22 @@ class BitmapUtils {
     /**
      * Resamples the captured photo to fit the screen for better memory usage.
      *
-     * @param context   The application context.
+     * @param imageView The ImageView to put the photo
      * @param imagePath The path of the photo to be resampled.
      * @return The resampled bitmap
      */
-    static Bitmap resamplePic(Context context, String imagePath) {
+    static Bitmap resamplePic(ImageView imageView, String imagePath) {
 
-        // Get device screen size information
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        manager.getDefaultDisplay().getMetrics(metrics);
-
-        int targetH = metrics.heightPixels;
-        int targetW = metrics.widthPixels;
+        // Get dimensions of the View
+        int targetH = imageView.getHeight();
+        int targetW = imageView.getWidth();
 
         // Get the dimensions of the original bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
+
         int photoH = bmOptions.outHeight;
+        int photoW = bmOptions.outWidth;
 
         // Determine how much to scale down the image
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
@@ -71,7 +69,7 @@ class BitmapUtils {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
-        return BitmapFactory.decodeFile(imagePath);
+        return BitmapFactory.decodeFile(imagePath, bmOptions);
     }
 
     /**
@@ -87,9 +85,9 @@ class BitmapUtils {
         File storageDir = context.getExternalCacheDir();
 
         return File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,
+                ".jpg",
+                storageDir
         );
     }
 
