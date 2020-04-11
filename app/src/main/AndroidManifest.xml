@@ -30,7 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -43,7 +43,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

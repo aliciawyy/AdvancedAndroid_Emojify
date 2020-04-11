@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.example.android.emojify"
-        minSdkVersion 15
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -31,9 +31,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     // Java language implementation
     implementation "androidx.fragment:fragment:1.2.4"
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.2'
     // Testing Fragments in Isolation
     debugImplementation 'androidx.fragment:fragment-testing:1.2.4'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'

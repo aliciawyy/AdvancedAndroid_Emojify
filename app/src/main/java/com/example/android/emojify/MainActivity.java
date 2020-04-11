@@ -37,7 +37,7 @@ import com.example.android.emojify.databinding.ActivityMainBinding;
 import java.io.File;
 import java.io.IOException;
 
-// import timber.log.Timber;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding.shareButton.setOnClickListener(v -> shareMe());
 
         // Set up Timber
-        // Timber.plant(new Timber.DebugTree());
+        Timber.plant(new Timber.DebugTree());
     }
 
     /**
