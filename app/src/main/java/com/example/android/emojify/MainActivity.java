@@ -24,25 +24,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import com.example.android.emojify.databinding.ActivityMainBinding;
 import java.io.File;
 import java.io.IOException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import timber.log.Timber;
+// import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,37 +47,31 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.fileprovider";
 
-    @BindView(R.id.image_view) ImageView mImageView;
-
-    @BindView(R.id.emojify_button) Button mEmojifyButton;
-    @BindView(R.id.share_button) FloatingActionButton mShareFab;
-    @BindView(R.id.save_button) FloatingActionButton mSaveFab;
-    @BindView(R.id.clear_button) FloatingActionButton mClearFab;
-
-    @BindView(R.id.title_text_view) TextView mTitleTextView;
-
     private String mTempPhotoPath;
 
     private Bitmap mResultsBitmap;
 
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = ActivityMainBinding.inflate(LayoutInflater.from(this));
+        setContentView(mBinding.getRoot());
 
-        // Bind the views
-        ButterKnife.bind(this);
+        mBinding.emojifyButton.setOnClickListener(v -> emojifyMe());
+        mBinding.clearButton.setOnClickListener(v -> clearImage());
+        mBinding.saveButton.setOnClickListener(v -> saveMe());
+        mBinding.shareButton.setOnClickListener(v -> shareMe());
 
         // Set up Timber
-        Timber.plant(new Timber.DebugTree());
+        // Timber.plant(new Timber.DebugTree());
     }
 
     /**
      * OnClick method for "Emojify Me!" Button. Launches the camera app.
      */
-    @OnClick(R.id.emojify_button)
-    public void emojifyMe() {
+    private void emojifyMe() {
         // Check for the external storage permission
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -159,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If the image capture activity was called and was successful
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             // Process the image and set it to the TextView
             processAndSetImage();
@@ -175,11 +165,11 @@ public class MainActivity extends AppCompatActivity {
     private void processAndSetImage() {
 
         // Toggle Visibility of the views
-        mEmojifyButton.setVisibility(View.GONE);
-        mTitleTextView.setVisibility(View.GONE);
-        mSaveFab.setVisibility(View.VISIBLE);
-        mShareFab.setVisibility(View.VISIBLE);
-        mClearFab.setVisibility(View.VISIBLE);
+        mBinding.emojifyButton.setVisibility(View.GONE);
+        mBinding.titleTextView.setVisibility(View.GONE);
+        mBinding.shareButton.setVisibility(View.VISIBLE);
+        mBinding.saveButton.setVisibility(View.VISIBLE);
+        mBinding.clearButton.setVisibility(View.VISIBLE);
 
         // Resample the saved image to fit the ImageView
         mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
@@ -189,15 +179,14 @@ public class MainActivity extends AppCompatActivity {
         mResultsBitmap = Emojifier.detectFacesandOverlayEmoji(this, mResultsBitmap);
 
         // Set the new bitmap to the ImageView
-        mImageView.setImageBitmap(mResultsBitmap);
+        mBinding.imageView.setImageBitmap(mResultsBitmap);
     }
 
 
     /**
      * OnClick method for the save button.
      */
-    @OnClick(R.id.save_button)
-    public void saveMe() {
+    private void saveMe() {
         // Delete the temporary image file
         BitmapUtils.deleteImageFile(this, mTempPhotoPath);
 
@@ -208,8 +197,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * OnClick method for the share button, saves and shares the new bitmap.
      */
-    @OnClick(R.id.share_button)
-    public void shareMe() {
+    private void shareMe() {
         // Delete the temporary image file
         BitmapUtils.deleteImageFile(this, mTempPhotoPath);
 
@@ -223,15 +211,14 @@ public class MainActivity extends AppCompatActivity {
     /**
      * OnClick for the clear button, resets the app to original state.
      */
-    @OnClick(R.id.clear_button)
-    public void clearImage() {
+    private void clearImage() {
         // Clear the image and toggle the view visibility
-        mImageView.setImageResource(0);
-        mEmojifyButton.setVisibility(View.VISIBLE);
-        mTitleTextView.setVisibility(View.VISIBLE);
-        mShareFab.setVisibility(View.GONE);
-        mSaveFab.setVisibility(View.GONE);
-        mClearFab.setVisibility(View.GONE);
+        mBinding.imageView.setImageResource(0);
+        mBinding.emojifyButton.setVisibility(View.VISIBLE);
+        mBinding.titleTextView.setVisibility(View.VISIBLE);
+        mBinding.shareButton.setVisibility(View.GONE);
+        mBinding.saveButton.setVisibility(View.GONE);
+        mBinding.clearButton.setVisibility(View.GONE);
 
         // Delete the temporary image file
         BitmapUtils.deleteImageFile(this, mTempPhotoPath);
